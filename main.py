@@ -11,7 +11,7 @@ class Person:
         return self.__name
 
     @property
-    def phone_numbers(self) -> str:
+    def phone_numbers(self) -> list:
         return self.__phone_numbers
 
     @name.setter
@@ -36,13 +36,13 @@ class PhoneBook:
     def add_person(self, person: Person) -> None:
         self.__persons.append(person)
 
-    def find_person(self, name: str) -> str:
+    def find_person(self, name: str) -> Person:
         for person in self.__persons:
             if person.name == name:
                 return person
         return None
 
-    def list_persons(self) -> None:
+    def list_persons(self) -> list:
         return self.__persons
 
 
@@ -60,18 +60,18 @@ class UserInterface:
         print('5. Quit')
 
     def add_person(self) -> None:
-        name = input('Enter the name of the person: ')
-        person = Person(name)
+        name: str = input('Enter the name of the person: ')
+        person: Person = Person(name)
         self.phone_book.add_person(person)
 
         print(f'{name} has been added to the phone book.')
 
     def add_phone_number(self) -> None:
-        name = input('Enter the name of the person: ')
-        person = self.phone_book.find_person(name)
+        name: str = input('Enter the name of the person: ')
+        person: Person = self.phone_book.find_person(name)
 
         if person:
-            phone_number = input('Enter the phone number: ')
+            phone_number: str = input('Enter the phone number: ')
             person.phone_numbers.append(phone_number)
 
             print(f'Phone number {phone_number} has been added to {name}.')
@@ -79,8 +79,8 @@ class UserInterface:
             print(f'No person found with the name {name}.')
 
     def find_person(self) -> None:
-        name = input('Enter the name of the person: ')
-        person = self.phone_book.find_person(name)
+        name: str = input('Enter the name of the person: ')
+        person: Person = self.phone_book.find_person(name)
 
         if person:
             print(person)
@@ -88,7 +88,7 @@ class UserInterface:
             print(f'No person found with the name {name}.')
 
     def list_all_persons(self) -> None:
-        persons = self.phone_book.list_persons()
+        persons: list = self.phone_book.list_persons()
 
         if persons:
             for person in persons:
@@ -133,7 +133,7 @@ class FileHandler:
             raise ValueError('Empty. Please try again!')
 
     def save_phone_book(self, phone_book: PhoneBook) -> None:
-        data = []
+        data: list = []
 
         for person in phone_book.list_persons():
             data.append({
@@ -144,13 +144,13 @@ class FileHandler:
             with open(self.filename, mode='w') as file:
                 json.dump(data, file, indent=4)
 
-    def load_phone_book(self, phone_book: PhoneBook):
+    def load_phone_book(self, phone_book: PhoneBook) -> None:
         try:
             with open(self.filename, mode='r') as file:
-                data = json.load(file)
+                data: list = json.load(file)
 
                 for entry in data:
-                    person = Person(entry['name'])
+                    person: Person = Person(entry['name'])
 
                     for phone_number in entry['phone_numbers']:
                         person.add_phone_number(phone_number)
